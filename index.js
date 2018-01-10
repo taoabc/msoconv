@@ -10,7 +10,7 @@ module.exports = function (source, destination) {
       reject(new Error('Only windows supported!'))
     }
     fs.access(source, fs.constants.F_OK, err => {
-      if (!err) {
+      if (err) {
         reject(new Error('Source file does not exist'))
       } else {
         const conv = spawn(path.resolve(__dirname, 'msoconv.exe'), [source, destination, 'pdf'])
