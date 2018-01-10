@@ -1,0 +1,20 @@
+{
+  "name": "msoconv",
+  "version": "1.0.0",
+  "description": "document convert package for microsoft automation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taoabc/msoconv.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/taoabc/msoconv/issues"
+  },
+  "homepage": "https://github.com/taoabc/msoconv#readme"
+}
