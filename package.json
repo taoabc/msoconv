@@ -1,6 +1,6 @@
 {
   "name": "msoconv",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "document convert package for microsoft automation",
   "main": "index.js",
   "scripts": {
