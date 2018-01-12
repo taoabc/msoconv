@@ -1,6 +1,6 @@
 {
   "name": "msoconv",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "document convert package for microsoft automation",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,13 @@
     "type": "git",
     "url": "git+https://github.com/taoabc/msoconv.git"
   },
-  "keywords": [],
+  "keywords": [
+    "mso",
+    "office",
+    "convert",
+    "pdf",
+    "conv"
+  ],
   "author": "",
   "license": "Apache-2.0",
   "bugs": {
