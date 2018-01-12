@@ -23,5 +23,7 @@
     "url": "https://github.com/taoabc/msoconv/issues"
   },
   "homepage": "https://github.com/taoabc/msoconv#readme",
-  "dependencies": {}
+  "dependencies": {
+    "hazardous": "^0.3.0"
+  }
 }
