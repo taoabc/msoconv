@@ -1,12 +1,15 @@
 # msoconv
-document convert package for microsoft automation
+Document convert package which use microsoft automation
 
-we use exe to convert fist!
+## attention
+1. We use exe to convert first! So if you use msoconv in electron, you may need spawn exe in `app.asar.unpacked` folder.
+2. version 0.0.4 only support PowerPoint to pdf
 
-# next
-write C++ addon code to convert
+## next
+1. write C++ addon code to convert
+2. Support every document type for microsofr office
 
-# usage
+## usage
 
 ```javascript
 const msoconv = require('msoconv')
