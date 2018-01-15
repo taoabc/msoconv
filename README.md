@@ -1,10 +1,10 @@
 # msoconv
 Document convert package which use microsoft automation
 
-Only for ms windows platform
+Only for windows platform
 
 ## attention
-1. We use exe to convert first! So if you use msoconv in electron, you may need spawn exe in `app.asar.unpacked` folder.
+1. We use exe to convert first! So if you use msoconv in electron, pay attention to exe in `app.asar.unpacked` folder.
 2. Only support PowerPoint to pdf yet.
 
 ## next
