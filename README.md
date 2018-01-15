@@ -6,12 +6,13 @@ Document convert package which use microsoft automation
 
 Only for windows platform
 
+## Release 0.2.0
+1. Now we can convert document with C++ native code, not exe, :laughing:.
+
 ## attention
-1. We use exe to convert first! So if you use msoconv in electron, pay attention to exe in `app.asar.unpacked` folder.
 2. Only support PowerPoint to pdf yet.
 
 ## next
-1. write C++ addon code to convert
 2. Convert any document type which microsoft office support
 
 ## usage

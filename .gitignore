@@ -1,3 +1,6 @@
+# own
+build/
+
 # Logs
 logs
 *.log

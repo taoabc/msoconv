@@ -1,21 +1,16 @@
-require('hazardous')
-const { spawn } = require('child_process')
 const path = require('path')
 const fs = require('fs')
+const native = require('./build/Release/msoconv')
 
 module.exports = function (source, destination) {
   source = path.normalize(source)
   destination = path.normalize(destination)
   return new Promise((resolve, reject) => {
-    if (process.platform.indexOf('win') !== 0) {
-      reject(new Error('Only windows supported!'))
-    }
     fs.access(source, fs.constants.F_OK, err => {
       if (err) {
         reject(new Error('Source file does not exist'))
       } else {
-        const conv = spawn(path.resolve(__dirname, 'msoconv.exe'), [source, destination, 'pdf'])
-        conv.on('close', code => {
+        native.conv(source, destination, code => {
           if (code === 0) {
             resolve(code)
           } else {
