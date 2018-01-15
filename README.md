@@ -1,4 +1,7 @@
 # msoconv
+
+[![Build Status](https://travis-ci.org/taoabc/msoconv.svg?branch=production)](https://travis-ci.org/taoabc/msoconv)
+
 Document convert package which use microsoft automation
 
 Only for windows platform
