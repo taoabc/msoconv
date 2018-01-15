@@ -1,7 +1,7 @@
 #include <string>
 #include <vector>
 #include <Windows.h>
-#include <atlbase.h>
+#include "comptr.h"
 
 const int kErrUnknown = 1;
 const int kErrParamError = 2;
@@ -145,63 +145,74 @@ HRESULT GetPresentations(IDispatch* ppApp, IDispatch** pres)
     VariantInit(&result);
     HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, ppApp, L"Presentations", 0);
     *pres = result.pdispVal;
+    VariantClear(&result); // now we use comptr to take dispatch pointer, so we can free the memory
     return hr;
 }
 
-HRESULT OpenPresentation(CComPtr<IDispatch> pres, const std::wstring& file, CComPtr<IDispatch>& openedPres)
+HRESULT OpenPresentation(ult::ComPtr<IDispatch> pres, const std::wstring& file, ult::ComPtr<IDispatch>& openedPres)
 {
     if (!pres || file.empty()) {
         return E_INVALIDARG;
     }
     VARIANT result; // ref count can not down to 0
     VariantInit(&result);
-    CComVariant fileName(SysAllocString(file.c_str()));
-    CComVariant withWindow;
+
+    VARIANT fileName;
+    fileName.vt = VT_BSTR;
+    fileName.bstrVal = SysAllocString(file.c_str());
+
+    VARIANT withWindow;
     withWindow.vt = VT_I4;
     withWindow.lVal = 0; // MsoTriState::msoFalse
 
-    CComVariant readOnly;
+    VARIANT readOnly;
     readOnly.vt = VT_I4;
     readOnly.lVal = -1; // MsoTriState::msoTrue
 
-    CComVariant untitled;
+    VARIANT untitled;
     untitled.vt = VT_I4;
     untitled.lVal = 0; // MsoTriState::msoFalse
 
     HRESULT hr = AutoWrap(DISPATCH_METHOD, &result, pres, L"Open", 4, withWindow, untitled, readOnly, fileName);
     openedPres = result.pdispVal;
+
+    VariantClear(&fileName);
+    VariantClear(&result); // now we use comptr to take dispatch pointer, so we can free the memory
     return hr;
 }
 
 int GetFileType(const std::wstring& path)
 {
     std::wstring realType = L"pdf";
-    if (realType.empty())
-    {
+    if (realType.empty()) {
         realType = L"pdf";
     }
     return 32;	// PpSaveAsFileType::ppSaveAsPDF
 }
 
-HRESULT SaveAs(CComPtr<IDispatch> inst, const std::wstring& outfile, int type)
+HRESULT SaveAs(ult::ComPtr<IDispatch> inst, const std::wstring& outfile, int type)
 {
     if (!inst) {
         return E_INVALIDARG;
     }
 
-    CComVariant fileName(SysAllocString(outfile.c_str()));
+    VARIANT fileName;
+    fileName.vt = VT_BSTR;
+    fileName.bstrVal = SysAllocString(outfile.c_str());
 
-    CComVariant format;
+    VARIANT format;
     format.vt = VT_I4;
     format.lVal = type;
 
-    CComVariant embedFont;
+    VARIANT embedFont;
     embedFont.vt = VT_I4;
     embedFont.lVal = -2;	// MsoTriState::msoTriStateMixed
 
                             // If there are more than 1 parameters passed, they MUST be pass in 
                             // reversed order. Otherwise, you may get the error 0x80020009.
     return AutoWrap(DISPATCH_METHOD, NULL, inst, L"SaveAs", 3, embedFont, format, fileName);
+
+    VariantClear(&fileName);
 }
 
 int Conv(const std::wstring& src, const std::wstring& dest)
@@ -215,8 +226,8 @@ int Conv(const std::wstring& src, const std::wstring& dest)
         return kErrUnknown;
     }
     int ret = 0;
-    CComPtr<IDispatch> ppApp;
-    CComPtr<IDispatch> openedPres;
+    ult::ComPtr<IDispatch> ppApp;
+    ult::ComPtr<IDispatch> openedPres;
     do {
         hr = GetPowerPointDispatch(&ppApp);
         if (FAILED(hr)) {
@@ -224,7 +235,7 @@ int Conv(const std::wstring& src, const std::wstring& dest)
             break;
         }
 
-        CComPtr<IDispatch> pres;
+        ult::ComPtr<IDispatch> pres;
         hr = GetPresentations(ppApp, &pres);
         if (FAILED(hr)) {
             ret = kErrPresentations;

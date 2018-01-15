@@ -6,6 +6,7 @@
       'sources': [
         'src/main.cpp',
         'src/msoconv.h',
+        'src/comptr.h',
       ],
       'cflags': [
         '-std=c++11',
