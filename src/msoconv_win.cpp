@@ -136,15 +136,15 @@ HRESULT GetPowerPointDispatch(IDispatch** ppApp)
     return CoCreateInstance(clsid, NULL, CLSCTX_LOCAL_SERVER, IID_IDispatch, (void**)ppApp);
 }
 
-HRESULT GetPresentations(IDispatch* ppApp, IDispatch** pres)
+HRESULT GetPresentations(ult::ComPtr<IDispatch> ppApp, ult::ComPtr<IDispatch>& pres)
 {
-    if (!ppApp || !pres) {
+    if (!ppApp) {
         return E_INVALIDARG;
     }
     VARIANT result; // ref count can not down to 0
     VariantInit(&result);
     HRESULT hr = AutoWrap(DISPATCH_PROPERTYGET, &result, ppApp, L"Presentations", 0);
-    *pres = result.pdispVal;
+    pres = result.pdispVal;
     VariantClear(&result); // now we use comptr to take dispatch pointer, so we can free the memory
     return hr;
 }
@@ -236,7 +236,7 @@ int Conv(const std::wstring& src, const std::wstring& dest)
         }
 
         ult::ComPtr<IDispatch> pres;
-        hr = GetPresentations(ppApp, &pres);
+        hr = GetPresentations(ppApp, pres);
         if (FAILED(hr)) {
             ret = kErrPresentations;
             break;

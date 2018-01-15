@@ -1,6 +1,6 @@
 {
   "name": "msoconv",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "document convert package for microsoft automation",
   "gypfile": true,
   "main": "index.js",
