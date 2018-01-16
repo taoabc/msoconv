@@ -1,5 +1,8 @@
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <cwctype>
+#include <map>
 #include <Windows.h>
 #include "comptr.h"
 
@@ -11,14 +14,23 @@ const int kErrOpenFile = 5;
 const int kErrDestType = 6;
 const int kErrSaveAs = 7;
 
+std::map<std::wstring, int> kTypeMap = {
+    { L"pdf", 32 },
+    { L"bmp", 19 },
+    { L"gif", 16 },
+    { L"jpg", 17 },
+    { L"png", 18 },
+    { L"xps", 33 },
+};
+
 static std::wstring Utf8ToUtf16(const std::string& str)
 {
-    int size = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, NULL, 0);
+    int size = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), NULL, 0);
     if (size <= 0) throw std::runtime_error("MultiByteToWideChar failed");
 
     std::vector<wchar_t> buffer(size);
 
-    size = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, buffer.data(), size);
+    size = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), buffer.data(), size);
     if (size <= 0) throw std::runtime_error("MultiByteToWideChar failed");
 
     return std::wstring(buffer.data(), size);
@@ -26,15 +38,22 @@ static std::wstring Utf8ToUtf16(const std::string& str)
 
 static std::string Utf16ToUtf8(const std::wstring& wstr)
 {
-    int size = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, NULL, 0, NULL, NULL);
+    int size = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), wstr.length(), NULL, 0, NULL, NULL);
     if (!size) throw std::runtime_error("WideCharToMultiByte failed");
 
     std::vector<char> buffer(size);
 
-    size = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, buffer.data(), size, NULL, NULL);
+    size = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), wstr.length(), buffer.data(), size, NULL, NULL);
     if (!size) throw std::runtime_error("WideCharToMultiByte failed");
 
     return std::string(buffer.data(), size);
+}
+
+static std::wstring StringToLower(const std::wstring& str)
+{
+    std::wstring lower = str;
+    std::transform(lower.begin(), lower.end(), lower.begin(), std::towlower);
+    return lower;
 }
 
 //
@@ -181,13 +200,14 @@ HRESULT OpenPresentation(ult::ComPtr<IDispatch> pres, const std::wstring& file, 
     return hr;
 }
 
-int GetFileType(const std::wstring& path)
+int GetFileType(const std::wstring& type)
 {
-    std::wstring realType = L"pdf";
-    if (realType.empty()) {
-        realType = L"pdf";
+    const std::wstring lowerType = StringToLower(type);
+    auto iter = kTypeMap.find(lowerType);
+    if (iter != kTypeMap.end()) {
+        return iter->second;
     }
-    return 32;	// PpSaveAsFileType::ppSaveAsPDF
+    return -1;
 }
 
 HRESULT SaveAs(ult::ComPtr<IDispatch> inst, const std::wstring& outfile, int type)
@@ -219,7 +239,7 @@ int Conv(const std::wstring& src, const std::wstring& dest, const std::wstring& 
 {
     // TODO Init and uninit Com in libuv's common thread may cause problem
     HRESULT hr = CoInitializeEx(NULL,
-                                COINIT_MULTITHREADED |
+                                COINIT_APARTMENTTHREADED |
                                 COINIT_DISABLE_OLE1DDE |
                                 COINIT_SPEED_OVER_MEMORY);
     if (FAILED(hr)) {
@@ -247,7 +267,7 @@ int Conv(const std::wstring& src, const std::wstring& dest, const std::wstring& 
             ret = kErrOpenFile;
             break;
         }
-        int typeInt = GetFileType(dest);
+        int typeInt = GetFileType(type);
         if (typeInt < 0) {
             ret = kErrDestType;
             break;

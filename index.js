@@ -2,7 +2,7 @@ const path = require('path')
 const fs = require('fs')
 const native = require('./build/Release/msoconv')
 
-function getType(path, type) {
+function getType (path, type) {
   if (type && type.length > 0) {
     return type
   }
@@ -17,7 +17,7 @@ module.exports = function (source, destination, type) {
       if (err) {
         reject(new Error('Source file does not exist'))
       } else {
-        native.conv(source, destination, getType(type), code => {
+        native.conv(source, destination, getType(destination, type), code => {
           if (code === 0) {
             resolve(code)
           } else {
