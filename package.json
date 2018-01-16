@@ -1,6 +1,6 @@
 {
   "name": "msoconv",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "document convert package for microsoft automation",
   "gypfile": true,
   "main": "index.js",
@@ -16,7 +16,10 @@
     "office",
     "convert",
     "pdf",
-    "conv"
+    "conv",
+    "powerpoint",
+    "ppt",
+    "pptx"
   ],
   "author": "",
   "license": "Apache-2.0",
