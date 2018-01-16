@@ -40,23 +40,23 @@ static std::string Utf16ToUtf8(const std::wstring& wstr)
 //
 //   FUNCTION: AutoWrap(int, VARIANT*, IDispatch*, LPOLESTR, int,...)
 //
-//   PURPOSE: Automation helper function. It simplifies most of the low-level 
-//      details involved with using IDispatch directly. Feel free to use it 
-//      in your own implementations. One caveat is that if you pass multiple 
+//   PURPOSE: Automation helper function. It simplifies most of the low-level
+//      details involved with using IDispatch directly. Feel free to use it
+//      in your own implementations. One caveat is that if you pass multiple
 //      parameters, they need to be passed in reverse-order.
 //
 //   PARAMETERS:
-//      * autoType - Could be one of these values: DISPATCH_PROPERTYGET, 
+//      * autoType - Could be one of these values: DISPATCH_PROPERTYGET,
 //      DISPATCH_PROPERTYPUT, DISPATCH_PROPERTYPUTREF, DISPATCH_METHOD.
 //      * pvResult - Holds the return value in a VARIANT.
 //      * pDisp - The IDispatch interface.
 //      * ptName - The property/method name exposed by the interface.
 //      * cArgs - The count of the arguments.
 //
-//   RETURN VALUE: An HRESULT value indicating whether the function succeeds 
-//      or not. 
+//   RETURN VALUE: An HRESULT value indicating whether the function succeeds
+//      or not.
 //
-//   EXAMPLE: 
+//   EXAMPLE:
 //      AutoWrap(DISPATCH_METHOD, NULL, pDisp, L"call", 2, parm[1], parm[0]);
 //
 HRESULT AutoWrap(int autoType, VARIANT* pvResult, IDispatch* pDisp,
@@ -208,14 +208,14 @@ HRESULT SaveAs(ult::ComPtr<IDispatch> inst, const std::wstring& outfile, int typ
     embedFont.vt = VT_I4;
     embedFont.lVal = -2;	// MsoTriState::msoTriStateMixed
 
-                            // If there are more than 1 parameters passed, they MUST be pass in 
+                            // If there are more than 1 parameters passed, they MUST be pass in
                             // reversed order. Otherwise, you may get the error 0x80020009.
     return AutoWrap(DISPATCH_METHOD, NULL, inst, L"SaveAs", 3, embedFont, format, fileName);
 
     VariantClear(&fileName);
 }
 
-int Conv(const std::wstring& src, const std::wstring& dest)
+int Conv(const std::wstring& src, const std::wstring& dest, const std::wstring& type)
 {
     // TODO Init and uninit Com in libuv's common thread may cause problem
     HRESULT hr = CoInitializeEx(NULL,
@@ -266,7 +266,7 @@ int Conv(const std::wstring& src, const std::wstring& dest)
     if (ppApp) {
         /////////////////////////////////////////////////////////////////////////
         // Quit the PowerPoint application. (i.e. Application.Quit())
-        // 
+        //
 
         AutoWrap(DISPATCH_METHOD, NULL, ppApp, L"Quit", 0);
     }
@@ -274,7 +274,7 @@ int Conv(const std::wstring& src, const std::wstring& dest)
     return ret;
 }
 
-int Conv(const std::string& src, const std::string& dest)
+int Conv(const std::string& src, const std::string& dest, const std::string& type)
 {
-    return Conv(Utf8ToUtf16(src), Utf8ToUtf16(dest));
+    return Conv(Utf8ToUtf16(src), Utf8ToUtf16(dest), Utf8ToUtf16(type));
 }

@@ -8,13 +8,14 @@ struct ConvBaton {
     Nan::Callback callback;
     std::string src;
     std::string dest;
+    std::string type;
     int code;
 };
 
 void ConvAsync(uv_work_t* req)
 {
     ConvBaton* baton = (ConvBaton*)req->data;
-    baton->code = Conv(baton->src, baton->dest);
+    baton->code = Conv(baton->src, baton->dest, baton->type);
 }
 
 void ConvComplete(uv_work_t* req, int status)
@@ -32,13 +33,14 @@ void ConvComplete(uv_work_t* req, int status)
 NAN_METHOD(Conv)
 {
     Nan::HandleScope scope;
-    if (info.Length() >= 3) {
+    if (info.Length() >= 4) {
         try {
             ConvBaton* baton = new ConvBaton();
             baton->req.data = baton;
-            baton->callback.Reset(v8::Local<v8::Function>::Cast(info[2]));
+            baton->callback.Reset(v8::Local<v8::Function>::Cast(info[3]));
             baton->src = *v8::String::Utf8Value(info[0]);
             baton->dest = *v8::String::Utf8Value(info[1]);
+            baton->type = *v8::String::Utf8Value(info[2]);
             uv_queue_work(uv_default_loop(), &baton->req, ConvAsync, ConvComplete);
         } catch (const std::exception& ex) {
             Nan::ThrowError(ex.what());

@@ -10,6 +10,7 @@ Only for windows platform
 1. Now we can convert document with C++ native code, not exe, :laughing:.
 
 ## attention
+1. Need PowerPoint installed!
 2. Only support PowerPoint to pdf yet.
 
 ## next
