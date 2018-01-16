@@ -6,7 +6,7 @@ Document convert package which use microsoft automation
 
 Only for windows platform
 
-## Release 0.2.0
+## Release 0.2
 1. Now we can convert document with C++ native code, not exe, :laughing:.
 
 ## attention
