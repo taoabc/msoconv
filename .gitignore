@@ -1,5 +1,6 @@
 # own
 build/
+test/out
 
 # Logs
 logs

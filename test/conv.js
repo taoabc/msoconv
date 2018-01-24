@@ -1,6 +1,7 @@
+const path = require('path')
 const conv = require('../index')
 
-conv('D:/temp/test.pptx', 'D:/temp/out.pdf')
+conv(path.resolve(__dirname, 'pp/test.pptx'), path.resolve(__dirname, 'out/pp-test.pdf'))
 .then(code => {
   console.log('ok', code)
 })

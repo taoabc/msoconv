@@ -2,28 +2,47 @@ const path = require('path')
 const fs = require('fs')
 const native = require('./build/Release/msoconv')
 
-function getType (path, type) {
+function getType (p, type) {
   if (type && type.length > 0) {
     return type
   }
-  return 'pdf'
+  const ext = path.extname(p)
+  if (ext && ext.length > 0) {
+    if (ext.indexOf('.') === 0) {
+      return ext.substr(1, ext.length - 1)
+    }
+    return ext
+  }
 }
 
-module.exports = function (source, destination, type) {
+function fsAccessExist (p) {
+  return new Promise((resolve, reject) => {
+    fs.access(p, fs.constants.F_OK, err => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve()
+      }
+    })
+  })
+}
+
+module.exports = async function (source, destination, type) {
   source = path.normalize(source)
   destination = path.normalize(destination)
+  const destdir = path.dirname(destination)
+  const promises = []
+  promises.push(fsAccessExist(source))
+  promises.push(fsAccessExist(destdir))
+
+  await Promise.all(promises)
+
   return new Promise((resolve, reject) => {
-    fs.access(source, fs.constants.F_OK, err => {
-      if (err) {
-        reject(new Error('Source file does not exist'))
+    native.conv(source, destination, getType(destination, type), code => {
+      if (code === 0) {
+        resolve(code)
       } else {
-        native.conv(source, destination, getType(destination, type), code => {
-          if (code === 0) {
-            resolve(code)
-          } else {
-            reject(code)
-          }
-        })
+        reject(code)
       }
     })
   })
