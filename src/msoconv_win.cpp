@@ -239,7 +239,7 @@ int Conv(const std::wstring& src, const std::wstring& dest, const std::wstring& 
 {
     // TODO Init and uninit Com in libuv's common thread may cause problem
     HRESULT hr = CoInitializeEx(NULL,
-                                COINIT_APARTMENTTHREADED |
+                                COINIT_MULTITHREADED |
                                 COINIT_DISABLE_OLE1DDE |
                                 COINIT_SPEED_OVER_MEMORY);
     if (FAILED(hr)) {
