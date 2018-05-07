@@ -1,6 +1,6 @@
 {
   "name": "msoconv",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "description": "document convert package for microsoft automation",
   "gypfile": true,
   "main": "index.js",
@@ -28,9 +28,9 @@
   },
   "homepage": "https://github.com/taoabc/msoconv#readme",
   "dependencies": {
-    "nan": "^2.8.0"
+    "nan": "^2.10.0"
   },
   "devDependencies": {
-    "standard": "^10.0.3"
+    "standard": "^11.0.1"
   }
 }

@@ -9,27 +9,27 @@ public:
                        const std::string& src,
                        const std::string& dest,
                        const std::string& type)
-        : Nan::AsyncWorker(callback),
+        : Nan::AsyncWorker(callback, "msoconv:conv-worker-resource"),
         src_(src),
         dest_(dest),
         type_(type)
     {
 
     }
-
-    virtual void WorkComplete()
+    
+    virtual void Execute()
+    {
+        code_ = Conv(src_, dest_, type_);
+    }
+protected:
+    virtual void HandleOKCallback()
     {
         Nan::HandleScope scope;
         const int argc = 1;
         v8::Local<v8::Value> argv[argc] = {
             Nan::New<v8::Number>(code_)
         };
-        callback->Call(argc, argv);
-    }
-    
-    virtual void Execute()
-    {
-        code_ = Conv(src_, dest_, type_);
+        callback->Call(argc, argv, async_resource);
     }
 private:
     int code_;

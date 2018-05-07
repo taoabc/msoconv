@@ -3,7 +3,7 @@ const conv = require('../index')
 
 const ppSource = path.resolve(__dirname, 'pp/test.pptx')
 
-async function main () {
+async function syncTest () {
   await conv(ppSource, path.resolve(__dirname, 'out/pp-test.pdf'))
   console.log('pdf ok')
   await conv(ppSource, path.resolve(__dirname, 'out/pp-test-png'), 'PNG')
@@ -18,10 +18,24 @@ async function main () {
   console.log('gif ok')
 }
 
-main()
-.then(() => {
-  console.log('all ok')
-})
-.catch(err => {
-  console.error(err)
-})
+async function asyncTest () {
+  const promises = [
+    conv(ppSource, path.resolve(__dirname, 'out/pp-test.pdf')),
+    conv(ppSource, path.resolve(__dirname, 'out/pp-test-png'), 'PNG'),
+    conv(ppSource, path.resolve(__dirname, 'out/pp-test-jpg'), 'jpg'),
+    conv(ppSource, path.resolve(__dirname, 'out/pp-test-xps.xps'), 'xPs'),
+    conv(ppSource, path.resolve(__dirname, 'out/pp-test-bmp.bmp')),
+    conv(ppSource, path.resolve(__dirname, 'out/pp-test-gif'), 'Gif')
+  ]
+  return Promise.all(promises)
+}
+
+asyncTest().then(() => console.log('all ok')).catch(err => console.error(err))
+
+// syncTest()
+//   .then(() => {
+//     console.log('all ok')
+//   })
+//   .catch(err => {
+//     console.error(err)
+//   })
