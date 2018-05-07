@@ -1,19 +1,15 @@
 language: node_js
-
 node_js:
-  - node
-
+- node
 install:
-  - npm install
-
+- npm install
 script:
-  - npm test
-
+- npm test
 deploy:
   provider: npm
   email: taoabc@gmail.com
   api_key:
-    secure: yHj/EBgOPVd+tglmETG/7ztM1dKsO0SrtJe1k+g7I6kHcqy6CbTLm+BZyLhMY/t5j01UeSqP0yveZmEazk4lxTi2rJTFLm5q7yzGg0pp3xRjcfzzDsS6q0T6fTqu+42eCnJFxTZLelszUgdkeX+a5hXLylCUl6b4VBfdQp++wJlfHC5CJdz4HSgZBIKoMXA3sQS7jvHu4YfCMa8ZtMBMxCYa7f2WQuJz2fUGyv5i+1w3x3zq/vcDGNsyNZXuxlN/fA258VTmq+tBQ02IhKWgd6lsbH45trEgjlvhJNX4aT+1T59nn29ooVzXIOVIJ4OLnT3pxK6RyeqqojMWMlW8VwuEHplhagfiWnoR32jgjAvpXoJqvyEiAn7QkN4jErz+aYczAAf77sW6uu+QzQXl+uh2JhA4BWYwptVGNaF8mD6UdhWOxkAzeozA24RQdxrrjMBM/TYorAVPOJq6vGQQ04u0dt9S18g2xEvz3O9hyTYH9J1mmdZEItoAprBQ2ANWsoy7OKN5BcNsY8hCJj7CoOafPU268HOs5wE7Wml6SXKWvcBEiPA/dl36+sTk3K29vCeGMaK4Vqx4QAYoJa+PLkKMQGqZkIsTr1h+/X+4nZmJTMRoddCet6Vh1PfjMDkNABMEng/mfGFGobqCXfrA2EgS/6ZzZvFNpn7baJSmu6k=
+    secure: l4IHS/deMSw/jvXqlCyLLSA6ukZxRJTdJkLhtGJFjzkR1Ii1r2PSFftsSYYvj8bLJne0Hlio7AveZxSrZTyJMAYwdVvGTQY65WVETcPuAqllJA5BO4hlCOz67SVAEnCDF5pzelv7VVl1AxUbSDRo8bTNSXRV4j2zV5QE6b78RHg2+t0H9CSMxFH02mztRSr/KlO1VsUsFIE5mpMYzlZAjQciJsKLkRuCyB4yPZ8kxgfufrxaYCFcv67/bRzy439G8pi/9I2gW+i8KYw3fgcHGadlwte9mKB+36tdyTFyPz+0urWH7x2/YELGg07XLlJgb7o9rm8/fxo7j2zktXUU/KtNRBFdpBVHAJZ9mkMNQrWohAGdL0f4MIyw/SGFyJpVQMSCkV+U62ORbBIl6srBBRAPbfM6yapJS9FSGOcGT7qiaAF18YZmFDuo1HUBn8iTocAXUFuJlEPcEM+dxNSjiMTfzGsQBq04JaHPfLXaC2N3esCYhBNPJ83LYEB5UrEeT7NMZ52X1p4WdhVN8/q8alqm+sYrZtLl0iXl580zcLe9hFnmBoER4LB1kYPaZB3qzmKtiyrGyGePeym1JRzUHsdUtUnQiEUyM1OcamR4NYskdIC5YBXohkVAqfudYY5z5HnQRRzrksAKPhYLDQ4dsi/OhBdN2dDhG/kuomUvLcg=
   on:
     branch: production
     repo: taoabc/msoconv
