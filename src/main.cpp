@@ -1,97 +1,103 @@
 #include <string>
 #include <memory>
-#include <nan.h>
+#include <node_api.h>
+#include "async-base.h"
 #include "msoconv.h"
+#include "string-operate.h"
 
-class ConvWorker : public Nan::AsyncWorker {
+class ConvWorker : public AsyncBase
+{
 public:
-    explicit ConvWorker(Nan::Callback* callback,
-                       const std::string& src,
-                       const std::string& dest,
-                       const std::string& type)
-        : Nan::AsyncWorker(callback, "msoconv:conv-worker-resource"),
-        src_(src),
-        dest_(dest),
-        type_(type)
-    {
+    explicit ConvWorker(
+        napi_env env,
+        napi_value callback,
+        const std::string& src,
+        const std::string dest,
+        const std::string& type) :
+            AsyncBase(env, callback, "conv-worker"),
+            src_(src),
+            dest_(dest), 
+            type_(type)
+    {}
 
-    }
-    
-    virtual void Execute()
+private:
+    virtual void execute(napi_env env) override // run in work thread
     {
         code_ = Conv(src_, dest_, type_);
     }
-protected:
-    virtual void HandleOKCallback()
+
+    virtual void complete(napi_env env, napi_status status) override
     {
-        Nan::HandleScope scope;
-        const int argc = 1;
-        v8::Local<v8::Value> argv[argc] = {
-            Nan::New<v8::Number>(code_)
-        };
-        callback->Call(argc, argv, async_resource);
+        napi_value value;
+        napi_status s = napi_create_int32(env, code_, &value);
+        if (s == napi_ok)
+        {
+            napi_value result;
+            callback(1, &value, &result);
+        }
     }
+
 private:
-    int code_;
+    int code_ = 0;
     std::string src_;
     std::string dest_;
     std::string type_;
 };
 
-NAN_METHOD(Conv)
+std::string getUtf8(napi_env env, napi_value value)
 {
-    Nan::HandleScope scope;
-    if (info.Length() >= 4) {
-        try {
-            Nan::Callback* callback = new Nan::Callback(Nan::To<v8::Function>(info[3]).ToLocalChecked());
-            std::string src = *v8::String::Utf8Value(info[0]);
-            std::string dest = *v8::String::Utf8Value(info[1]);
-            std::string type = *v8::String::Utf8Value(info[2]);
-            Nan::AsyncQueueWorker(new ConvWorker(callback, src, dest, type));
-        } catch (const std::exception& ex) {
-            Nan::ThrowError(ex.what());
-        }
+    size_t outSize = 0;
+    napi_status status = napi_get_value_string_utf8(env, value, nullptr, 0, &outSize);
+    if (outSize > 0)
+    {
+        size_t bufferSize = outSize + 1;
+        std::unique_ptr<char[]> buffer = std::make_unique<char[]>(bufferSize);
+        status = napi_get_value_string_utf8(env, value, buffer.get(), bufferSize, &outSize);
+        if (status != napi_ok) return std::string();
+        return std::string(buffer.get(), outSize);
     }
+    return std::string();
 }
 
-void Init(v8::Handle<v8::Object> exports)
+std::string getAnsi(napi_env env, napi_value value)
 {
-    Nan::SetMethod(exports, "conv", Conv);
+    return ult::Utf8ToAnsi(getUtf8(env, value));
 }
 
-NODE_MODULE(msoconv, Init)
+napi_value conv(napi_env env, napi_callback_info info)
+{
+    napi_status status;
+    do
+    {
+        const size_t argvNum = 4;
+        size_t argc = argvNum;
+        napi_value argv[argvNum];
+        status = napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
+        if (status != napi_ok || argc < argvNum)
+        {
+            napi_throw_type_error(env, "ERR_INVALID_ARG_TYPE", "Wrong number of arguments");
+            break;
+        }
+        std::string src = getAnsi(env, argv[0]);
+        std::string dest = getAnsi(env, argv[1]);
+        std::string type = getAnsi(env, argv[2]);
+        auto worker = new ConvWorker(env, argv[3], src, dest, type);
+    } while (false);
 
-//struct ConvBaton {
-//    uv_work_t req;
-//    Nan::Callback callback;
-//    std::string src;
-//    std::string dest;
-//    std::string type;
-//    int code;
-//};
-//
-//void ConvAsync(uv_work_t* req)
-//{
-//    ConvBaton* baton = (ConvBaton*)req->data;
-//    baton->code = Conv(baton->src, baton->dest, baton->type);
-//}
-//
-//void ConvComplete(uv_work_t* req, int status)
-//{
-//    Nan::HandleScope scope;
-//    // we need clear req->data after complete function called
-//    std::unique_ptr<ConvBaton> baton((ConvBaton*)req->data);
-//    const int argc = 1;
-//    v8::Local<v8::Value> argv[argc] = {
-//        Nan::New<v8::Number>(baton->code)
-//    };
-//    baton->callback.Call(argc, argv);
-//}
-//
-//ConvBaton* baton = new ConvBaton();
-//baton->req.data = baton;
-//baton->callback.Reset(v8::Local<v8::Function>::Cast(info[3]));
-//baton->src = *v8::String::Utf8Value(info[0]);
-//baton->dest = *v8::String::Utf8Value(info[1]);
-//baton->type = *v8::String::Utf8Value(info[2]);
-//uv_queue_work(uv_default_loop(), &baton->req, ConvAsync, ConvComplete);
+    napi_value value;
+    napi_get_undefined(env, &value);
+    return value;
+}
+
+napi_value Init(napi_env env, napi_value exports)
+{
+    napi_status status;
+    napi_property_descriptor desc[] = {
+        { "conv", nullptr, conv, nullptr, nullptr, nullptr, napi_default, nullptr },
+    };
+    status = napi_define_properties(env, exports, 1, desc);
+    if (status != napi_ok) return nullptr;
+    return exports;
+}
+
+NAPI_MODULE(msoconv, Init)

@@ -2,11 +2,10 @@
   'targets': [
     {
       'target_name': 'msoconv',
-      'include_dirs': [ '<!(node -e "require(\'nan\')")' ],
       'sources': [
         'src/main.cpp',
         'src/msoconv.h',
-        'src/comptr.h',
+        'src/async-base.h'
       ],
       'cflags': [
         '-std=c++11',
@@ -15,7 +14,9 @@
       'conditions': [
         ['OS=="win"', {
           'sources': [
+            'src/comptr.h',
             'src/msoconv_win.cpp',
+            'src/string-operate.h'
           ],
           'defines': [
             'UNICODE',

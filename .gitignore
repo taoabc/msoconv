@@ -1,6 +1,7 @@
 # own
 build/
 test/out
+.vscode/ipch
 
 # Logs
 logs
