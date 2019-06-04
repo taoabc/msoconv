@@ -5,6 +5,7 @@
 #include <map>
 #include <Windows.h>
 #include "comptr.h"
+#include "string-operate.h"
 
 const int kErrUnknown = 1;
 const int kErrParamError = 2;
@@ -22,32 +23,6 @@ std::map<std::wstring, int> kTypeMap = {
     { L"png", 18 },
     { L"xps", 33 },
 };
-
-static std::wstring Utf8ToUtf16(const std::string& str)
-{
-    int size = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), NULL, 0);
-    if (size <= 0) throw std::runtime_error("MultiByteToWideChar failed");
-
-    std::vector<wchar_t> buffer(size);
-
-    size = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), buffer.data(), size);
-    if (size <= 0) throw std::runtime_error("MultiByteToWideChar failed");
-
-    return std::wstring(buffer.data(), size);
-}
-
-static std::string Utf16ToUtf8(const std::wstring& wstr)
-{
-    int size = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), wstr.length(), NULL, 0, NULL, NULL);
-    if (!size) throw std::runtime_error("WideCharToMultiByte failed");
-
-    std::vector<char> buffer(size);
-
-    size = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), wstr.length(), buffer.data(), size, NULL, NULL);
-    if (!size) throw std::runtime_error("WideCharToMultiByte failed");
-
-    return std::string(buffer.data(), size);
-}
 
 static std::wstring StringToLower(const std::wstring& str)
 {
@@ -296,5 +271,5 @@ int Conv(const std::wstring& src, const std::wstring& dest, const std::wstring& 
 
 int Conv(const std::string& src, const std::string& dest, const std::string& type)
 {
-    return Conv(Utf8ToUtf16(src), Utf8ToUtf16(dest), Utf8ToUtf16(type));
+    return Conv(ult::Utf8ToUnicode(src), ult::Utf8ToUnicode(dest), ult::Utf8ToUnicode(type));
 }

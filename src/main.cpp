@@ -3,7 +3,6 @@
 #include <node_api.h>
 #include "async-base.h"
 #include "msoconv.h"
-#include "string-operate.h"
 
 class ConvWorker : public AsyncBase
 {
@@ -59,11 +58,6 @@ std::string getUtf8(napi_env env, napi_value value)
     return std::string();
 }
 
-std::string getAnsi(napi_env env, napi_value value)
-{
-    return ult::Utf8ToAnsi(getUtf8(env, value));
-}
-
 napi_value conv(napi_env env, napi_callback_info info)
 {
     napi_status status;
@@ -78,9 +72,9 @@ napi_value conv(napi_env env, napi_callback_info info)
             napi_throw_type_error(env, "ERR_INVALID_ARG_TYPE", "Wrong number of arguments");
             break;
         }
-        std::string src = getAnsi(env, argv[0]);
-        std::string dest = getAnsi(env, argv[1]);
-        std::string type = getAnsi(env, argv[2]);
+        std::string src = getUtf8(env, argv[0]);
+        std::string dest = getUtf8(env, argv[1]);
+        std::string type = getUtf8(env, argv[2]);
         auto worker = new ConvWorker(env, argv[3], src, dest, type);
     } while (false);
 

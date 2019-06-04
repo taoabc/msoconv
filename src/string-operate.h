@@ -13,6 +13,7 @@
 #include <cctype>
 #include <ctime>
 #include <cstdlib>
+#include <cstdint>
 
 #ifdef WIN32
 #include <Windows.h>
@@ -93,11 +94,11 @@ private:
 struct StringToLower {
 	template <typename CharT>
 	std::basic_string<CharT> operator()(const std::basic_string<CharT>& str) {
-    std::basic_string<CharT> result(str);
-    for (auto iter = result.begin(); iter != result.end(); ++iter) {
-      *iter = ToLowerCharT(*iter);
-    }
-    return result;
+      std::basic_string<CharT> result(str);
+      for (auto iter = result.begin(); iter != result.end(); ++iter) {
+        *iter = ToLowerCharT(*iter);
+      }
+      return result;
 	}
 private:
 	wchar_t ToLowerCharT(const wchar_t& c) {
@@ -128,62 +129,46 @@ private:
 
 #define ISUTF8_CHECK_BIT(ub, b) (ub & (1<<b))
 struct IsUtf8 {
-	bool operator()(const char *text, int len) {
-		int i = 0;
-		const unsigned char *ut = reinterpret_cast<const unsigned char *>(text);
-		int ret = 0;
-		int count = 0;
-		int b = 0;
-
-		while (i < len) {
-			count = 0;
-			b = 7;
-			while (b >= 0 && b <= 7) {
-				if (ISUTF8_CHECK_BIT(ut[i], b)) {
-					count++;
-					b--;
-				} else
-					break;
-			}
-
-			if (count >= 2) {
-				count--;
-			} else if (count != 0) {  
-				return 0;
-			}
-			while (count && i < len) {
-				i++;
-				if (ISUTF8_CHECK_BIT(ut[i], 7) > 0 && 0 == (ISUTF8_CHECK_BIT(ut[i], 6))) {
-					count--;
-					if (len - 1 == i) {     //finish
-						ret = 1;
-						break;
-					}
-				} else {
-					break;
-				}                   //if
-			}                       // while count && i<len
-			if (count > 0)
-				return 0;
-			i++;
-		}                           //while i<len
-		return 1;
-	}
-};
-
-struct UInt64ToString {
-  std::wstring operator()(unsigned __int64 num) {
-    wchar_t temp[32];
-    std::wstring result;
-    int pos = 0;
-    do {
-      temp[pos++] = (wchar_t)(L'0' + (int)(num % 10));
-      num /= 10;
-    } while (0 != num);
-    do {
-      result += temp[--pos];
-    } while (pos > 0);
-    return result;
+  bool operator()(const char *text, int len) {
+  	int i = 0;
+  	const unsigned char *ut = reinterpret_cast<const unsigned char *>(text);
+  	int ret = 0;
+  	int count = 0;
+  	int b = 0;
+  
+  	while (i < len) {
+  	  count = 0;
+  	  b = 7;
+  	  while (b >= 0 && b <= 7) {
+  	  	if (ISUTF8_CHECK_BIT(ut[i], b)) {
+  	      count++;
+  	  	  b--;
+  	  	} else
+  	  	  break;
+  	  }
+      
+  	  if (count >= 2) {
+  	  	count--;
+  	  } else if (count != 0) {  
+  	  	return 0;
+  	  }
+  	  while (count && i < len) {
+  	  	i++;
+  	  	if (ISUTF8_CHECK_BIT(ut[i], 7) > 0 && 0 == (ISUTF8_CHECK_BIT(ut[i], 6))) {
+  	  	  count--;
+  	  	  if (len - 1 == i) {     //finish
+  	  	    ret = 1;
+  	  		  break;
+  	  	  }
+  	  	} else {
+  	  	  break;
+  	  	}                   //if
+  	  }                       // while count && i<len
+  	  if (count > 0)
+  	  	return 0;
+  	  i++;
+  	}                           //while i<len
+  	return 1;
   }
 };
 
@@ -292,20 +277,6 @@ inline std::string Utf8ToAnsi(const char* src, int len) {
 
 inline std::string Utf8ToAnsi(const std::string& src) {
   return UnicodeToAnsi(Utf8ToUnicode(src));
-}
-
-inline std::wstring IntToString(__int64 num) {
-  std::wstring result;
-  if (num < 0) {
-    result += L'-';
-    num = -num;
-  }
-  result.append(detail::UInt64ToString()(num));
-  return result;
-}
-
-inline std::wstring UIntToString(unsigned __int64 num) {
-  return detail::UInt64ToString()(num);
 }
 
 inline std::string UrlEncode(const char* s, size_t len) {
