@@ -3,23 +3,26 @@
  * @brief 提供字符串操作，这里使用inline函数，方便大家使用其返回值
  * @author huhaitao
  */
-#ifndef ULT_STRING_OPERATE_H_
-#define ULT_STRING_OPERATE_H_
+#pragma once
 
 #include <string>
 #include <memory>
 #include <sstream>
 #include <vector>
-#include <Windows.h>
 #include <cwctype>
 #include <cctype>
 #include <ctime>
 #include <cstdlib>
 
+#ifdef WIN32
+#include <Windows.h>
+#endif
+
 namespace ult {
 
 namespace detail {
 
+#ifdef WIN32
 struct MultiByteToUnicode {
   std::wstring operator()(const char* src, int len, unsigned int codepage) {
     if (len > 0) {
@@ -43,6 +46,19 @@ struct UnicodeToMultiByte {
     return std::string();
   }
 };
+#else
+struct MultiByteToUnicode {
+  std::wstring operator()(const char* src, int len, unsigned int codepage) {
+   return std::wstring();
+  }
+};
+
+struct UnicodeToMultiByte {
+  std::string operator()(const wchar_t* src, int len, unsigned int codepage) {
+    return std::string();
+  }
+};
+#endif
 
 struct StringICompare {
   template <typename CharT>
@@ -407,5 +423,3 @@ std::basic_string<CharT> StringTrim(const std::basic_string<CharT>& str, const C
   return StringLTrim(StringRTrim(str, trim_chars), trim_chars);
 }
 } //namespace ult
-
-#endif // ULT_STRING_H_
