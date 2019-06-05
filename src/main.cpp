@@ -75,7 +75,7 @@ napi_value conv(napi_env env, napi_callback_info info)
         std::string src = getUtf8(env, argv[0]);
         std::string dest = getUtf8(env, argv[1]);
         std::string type = getUtf8(env, argv[2]);
-        auto worker = new ConvWorker(env, argv[3], src, dest, type);
+        new ConvWorker(env, argv[3], src, dest, type);
     } while (false);
 
     napi_value value;
