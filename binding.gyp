@@ -7,6 +7,10 @@
         'src/msoconv.h',
         'src/async-base.h'
       ],
+      'cflags': [
+        '-std=c++17',
+        '-D_GLIBCXX_USE_CXX11_ABI=0'
+      ],
       'conditions': [
         ['OS=="win"', {
           'sources': [
