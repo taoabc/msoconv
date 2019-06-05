@@ -8,7 +8,7 @@
         'src/async-base.h'
       ],
       'cflags': [
-        '-std=c++14',
+        '-std=c++1y',
         '-D_GLIBCXX_USE_CXX11_ABI=0'
       ],
       'conditions': [
