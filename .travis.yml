@@ -3,13 +3,13 @@ addons:
   apt:
     update: true
     sources:
-      - ubuntu-toolchain-r-test
+    - ubuntu-toolchain-r-test
     packages:
-      - g++-7
+    - g++-7
 node_js:
 - node
 env:
-  - CXX=g++-7
+- CXX=g++-7
 install:
 - npm install
 script:
@@ -18,7 +18,7 @@ deploy:
   provider: npm
   email: taoabc@gmail.com
   api_key:
-    secure: l4IHS/deMSw/jvXqlCyLLSA6ukZxRJTdJkLhtGJFjzkR1Ii1r2PSFftsSYYvj8bLJne0Hlio7AveZxSrZTyJMAYwdVvGTQY65WVETcPuAqllJA5BO4hlCOz67SVAEnCDF5pzelv7VVl1AxUbSDRo8bTNSXRV4j2zV5QE6b78RHg2+t0H9CSMxFH02mztRSr/KlO1VsUsFIE5mpMYzlZAjQciJsKLkRuCyB4yPZ8kxgfufrxaYCFcv67/bRzy439G8pi/9I2gW+i8KYw3fgcHGadlwte9mKB+36tdyTFyPz+0urWH7x2/YELGg07XLlJgb7o9rm8/fxo7j2zktXUU/KtNRBFdpBVHAJZ9mkMNQrWohAGdL0f4MIyw/SGFyJpVQMSCkV+U62ORbBIl6srBBRAPbfM6yapJS9FSGOcGT7qiaAF18YZmFDuo1HUBn8iTocAXUFuJlEPcEM+dxNSjiMTfzGsQBq04JaHPfLXaC2N3esCYhBNPJ83LYEB5UrEeT7NMZ52X1p4WdhVN8/q8alqm+sYrZtLl0iXl580zcLe9hFnmBoER4LB1kYPaZB3qzmKtiyrGyGePeym1JRzUHsdUtUnQiEUyM1OcamR4NYskdIC5YBXohkVAqfudYY5z5HnQRRzrksAKPhYLDQ4dsi/OhBdN2dDhG/kuomUvLcg=
+    secure: rDZs/54UpBoKll1XRI1t95TnDM3Ldk1zircFuIPjIanlpuAgl3V06F+GrHjgzt+oqj8NPjnjgnhLGl3AhF0kBm8435xHfFy50d4SUmCMQhiPa7peOFr4C5gkPWRk2lfs5khCX1kSDIGJnBGq98+5dMwkLAX+KdQxMmCmT9oZACbmYIrI0eMyYl43uTWrIn1oisSICnWzvf7IEMYrT8SjyGWngbXa++1z/HPON5fr/N+NVWSf2vgzs+rR6dunEecX1HYR0Ng6K6RiEoYxwukNeGqqLzAIANO2F92nNsXrUi7Mf9djYkpPNx+y4oeobZPGiiBwrO2bZAWgYGuvR0mL2ypq9LoRufkwVJSojLB5JmjSXfsE0PikdvoBrfsdwPrUyu47uOtJyI/GKqnFeONMNQdac6mXRJHdq+uRBOK3rADcl8fdjkXgaWfFkW/v4Mm1agWa47F5OC5iR/e1JgDdFNcvBr9UwsO9IK6Bva28nuoR+d3zBjvaNhiigMn4D9Fvkbhf+88jueuj6yyeb/rWWfeI1xcP1TWRFEXMAFosKA5Pwjpe8JL8fDDYm4miIW9Slrr85rl93PCoJw7aPvKJjAkB4aMdZirMCKhUB1wAM46MpC0cYJvMYFhNeGO42FuYEa7m6PtIHLy4yptzUKpTPCZXNEjzKfZgIJaJ8NdQ7ac=
   on:
     branch: production
     repo: taoabc/msoconv
